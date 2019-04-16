@@ -1,0 +1,419 @@
+" =========================================
+" Plugins
+" =========================================
+
+" Begin
+call plug#begin('~/.vim/plugged')
+
+Plug 'VundleVim/Vundle.vim'
+
+" General
+Plug 'scrooloose/nerdtree'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'bling/vim-airline'
+Plug 'vim-scripts/grep.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-commentary'
+Plug 'ervandew/supertab'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'scrooloose/syntastic'
+Plug 'alvan/vim-closetag'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'vimwiki/vimwiki'
+
+" Formatting
+Plug 'sbdchd/neoformat'
+Plug 'shougo/neocomplete.vim'
+
+" Go
+Plug 'fatih/vim-go'
+
+" Syntax
+Plug 'sheerun/vim-polyglot'
+Plug 'prettier/vim-prettier'
+Plug 'ap/vim-css-color'
+
+" Themes
+Plug 'rafalbromirski/vim-airlineish'
+Plug 'rafalbromirski/vim-aurora'
+
+" Prettier
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'branch': 'release/1.x',
+  \ 'for': [
+    \ 'javascript',
+    \ 'typescript',
+    \ 'css',
+    \ 'less',
+    \ 'scss',
+    \ 'json',
+    \ 'graphql',
+    \ 'markdown',
+    \ 'vue',
+    \ 'lua',
+    \ 'php',
+    \ 'python',
+    \ 'ruby',
+    \ 'html',
+    \ 'swift' ] }
+
+call plug#end()
+
+" =========================================
+" GENERAL
+" =========================================
+
+set shell=zsh
+set encoding=utf-8
+set termencoding=utf-8
+set spelllang=en_gb
+
+" =========================================
+" BASIC CONFIGURATION
+" =========================================
+
+" project
+set modeline
+set modelines=10
+set backspace=indent,eol,start
+set history=1000
+set showcmd
+set showmode
+set nowrap
+set wildmenu
+set wildmode=list:longest,list:full
+set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,*.zip,*.gz,*.bz,*.tar,*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov,*.orig,.pdf,*.DS_Store
+set wildignore+=*/.sass-cache/*,*/tmp/*,*/node_modules/*,*/bower_components/*
+set clipboard+=unnamed
+set number
+set ruler
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set showmatch
+set nocursorline
+set nocursorcolumn
+set scrolljump=5
+set linebreak
+set showbreak=...
+set keymodel=startsel,stopsel
+set ttyfast
+set lcs=tab:\ \ ,eol:$,trail:~,extends:>,precedes:<
+set novisualbell
+set noerrorbells
+set cinoptions=:0,p0,t0
+set cinwords=if,else,while,do,for,switch,case
+set formatoptions=tcqr
+set foldmethod=manual
+set switchbuf=usetab,newtab
+set lazyredraw
+set vb t_vb=
+set synmaxcol=400
+set nocompatible
+set colorcolumn=120
+set t_Co=256
+
+" Time out on key codes but not mappings.
+" Basically this makes terminal Vim work sanely.
+set notimeout
+set ttimeout
+set ttimeoutlen=10
+
+" Better Completion
+set complete=.,w,b,u,t
+set completeopt=longest,menuone,preview
+
+" split settings
+set splitright
+set splitbelow
+
+" hide buffers when not displayed
+set hidden
+set backup                     " Enable creation of backup file.
+set backupdir=~/.vim/backup    " Where backups will go.
+set directory=~/.vim/tmp       " Where temporary files will go.
+set noswapfile
+
+" indent settings
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set expandtab
+" set autoindent
+
+" mouse settings
+set mousehide
+set mouse=a
+set fo=1
+
+" Save when losing focus
+au FocusLost * :silent! wall
+
+" Resize splits when the window is resized
+au VimResized * :wincmd =
+
+augroup trailing
+    au!
+    au InsertEnter * :set listchars-=trail:⌴
+augroup END
+
+" make uses real tabs
+" au FileType make set noexpandtab
+
+" =========================================
+" GUI
+" =========================================
+
+" Rgrep fix for Mac Os X
+let g:Grep_Xargs_Options='-0'
+
+" MacVim config
+if has("gui_macvim")
+  " Use the normal HIG movements, except for M-Up/Down
+  let macvim_skip_cmd_opt_movement = 1
+  set guifont=Monaco\ For\ Powerline:h13
+  " set macligatures
+  " set guifont=Fira\ Code:h14
+
+  highlight SpellBad term=underline gui=undercurl guisp=Orange
+
+  " Different cursors for different modes.
+  set guicursor=n-c:block-Cursor-blinkon0
+  set guicursor+=v:block-vCursor-blinkon0
+  set antialias
+  set guioptions=A
+  " set guioptions-=r "remove right-hand scroll bar
+  " set guioptions-=L "remove left-hand scroll bar
+end
+
+set background=dark
+colorscheme aurora
+
+" fix for jsx
+highlight link xmlEndTag xmlTag
+
+" =========================================
+" KEYBINDS
+" =========================================
+
+" totally annoying default mapping for cap k
+nmap K <nop>
+
+" ; => ;
+nnoremap ; :
+
+" Better ESC key
+imap jk <ESC>
+
+" copy paste
+vmap <C-c> y<Esc>i
+vmap <C-x> d<Esc>i
+imap <C-v> <Esc>pi
+imap <C-y> <Esc>ddi
+map <C-z> <Esc>
+imap <C-z> <Esc>ui
+
+" fast scrolling using control when in command mode (keeping the j/k paradigm)
+map <D-j> <C-d>
+map <D-k> <C-u>
+
+" duplicate current line
+nnoremap <D-d> Yp
+
+"f# keys
+noremap  <F1> :set invfullscreen<CR>
+inoremap <F1> <ESC>:set invfullscreen<CR>a
+
+" set curosrline / column (crosshair)
+nnoremap ,c :set cursorline! cursorcolumn!<CR>
+
+" nerdtree
+noremap ,d :NERDTreeToggle<cr>
+noremap ,f :NERDTreeFind<cr>
+
+" splits
+noremap ,v :vsp^<cr>
+noremap ,h :split^<cr>
+
+" copy file path to clipboard
+nmap ,y :let @+ = expand("%")<CR>
+
+" shift key fixes
+if has("user_commands")
+  command! -bang -nargs=? -complete=file E e<bang> <args>
+  command! -bang -nargs=? -complete=file W w<bang> <args>
+  command! -bang -nargs=? -complete=file Wq wq<bang> <args>
+  command! -bang -nargs=? -complete=file WQ wq<bang> <args>
+  command! -bang Wa wa<bang>
+  command! -bang WA wa<bang>
+  command! -bang Q q<bang>
+  command! -bang QA qa<bang>
+  command! -bang Qa qa<bang>
+endif
+
+" Yank from the cursor to the end of the line, to be consistent with C and D.
+nnoremap Y y$
+
+" moving lines
+nnoremap <D-DOWN> :m+<CR>==
+nnoremap <D-UP> :m-2<CR>==
+inoremap <D-DOWN> <Esc>:m+<CR>==gi
+inoremap <D-UP> <Esc>:m-2<CR>==gi
+vnoremap <D-DOWN> :m'>+<CR>gv=gv
+vnoremap <D-UP> :m-2<CR>gv=gv
+
+" cycle tabs with <CTRL><Left> and <CTRL><Right>
+nmap <D-Left> :tabprev<CR>
+nmap <D-Right> :tabnext<CR>
+
+" Navigate between splits <TAB> / <SHIFT+TAB>
+nmap <Tab> <c-w><c-w>
+nmap <s-Tab> <c-w><s-w>
+
+nmap <D->> :vertical resize +10<CR>
+nmap <D-<> :vertical resize -10<CR>
+
+" v fast save, close etc
+nmap ,w :w!<CR>
+nmap ,q :q!<CR>
+nmap ,x :x!<CR>
+nmap ,o :only!<CR>
+
+" Keep search matches in the middle of the window.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" =========================================
+" PLUGINS
+" =========================================
+
+" supertab
+let g:SuperTabCrMapping = 0
+let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
+let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
+let g:SuperTabContextDiscoverDiscovery = ["&completefunc:<c-x><c-u>", "&omnifunc:<c-x><c-o>"]
+
+" rgrep
+map <leader>f :Rgrep<CR>
+au FileType qf nmap <buffer> <cr> <cr><c-w><c-p>
+let Grep_Skip_Files = '*.bak *~ *tags *.log *.orig *.snap'
+let Grep_Skip_Dirs = '.git node_modules'
+
+" airline
+let g:airline_theme = 'airlineish'
+let g:airline_powerline_fonts = 1
+set laststatus=2
+
+" GitGutter
+let g:gitgutter_eager = 0
+let g:gitgutter_enabled = 1
+let g:gitgutter_max_signs = 1000
+autocmd BufWritePost * exe 'GitGutter'
+
+" Ctrlp
+let g:ctrlp_max_files = 0
+map ,jj :CtrlP 'ra'<CR>
+
+" NERDTree
+augroup ps_nerdtree
+    au!
+    au Filetype nerdtree setlocal nolist
+    " au Filetype nerdtree nnoremap <buffer> K :q<cr>
+augroup END
+
+let NERDTreeHighlightCursorline = 1
+let NERDTreeIgnore = ['\~$', '.*\.pyc$', 'pip-log\.txt$', 'whoosh_index',
+                    \ 'xapian_index', '.*.pid', 'monitor.py', '.*-fixtures-.*.json',
+                    \ '.*\.o$', 'db.db', 'tags.bak']
+
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+let NERDChristmasTree = 1
+let NERDTreeChDirMode = 2
+let NERDTreeMapJumpFirstChild = 'gK'
+
+" rainbow
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+" Multiple cursors
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<C-m>'
+let g:multi_cursor_prev_key='<C-n>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<Esc>'
+
+" Syntastic
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_balloons = 0
+
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exe = '$(npm bin)/eslint'
+
+let g:syntastic_go_checkers = ['golint', 'govet']
+
+" vim-closetag
+let g:closetag_filenames = ".html,.xhtml,.phtml,.jsx"
+let g:closetag_filenames = ".html,.xhtml,.phtml,.jsx"
+
+" vim-go
+let g:go_fmt_command = "goimports"
+
+" neocomplete
+let g:acp_enableAtStartup = 0
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+
+inoremap <expr><C-g> neocomplete#undo_completion()
+inoremap <expr><C-l> neocomplete#complete_common_string()
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+   return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+endfunction
+
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+
+au FileType css setlocal omnifunc=csscomplete#CompleteCSS
+au FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+au FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+au FileType python setlocal omnifunc=pythoncomplete#Complete
+au FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+au FileType go setlocal omnifunc=go#complete#Complete
+
+if !exists('g:neocomplete#force_omni_input_patterns')
+  let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+" neocomplete.vim }}}
+
+" =========================================
+" OTHER HACKS
+" =========================================
+
+" Remember last location in file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+        \| exe "normal g'\"" | endif
+endif
+
+" Remove whitespaces on save
+autocmd BufWritePre * :%s/\s\+$//e
+
+if ! has('gui_running')
+  set ttimeoutlen=10
+  augroup FastEscape
+    autocmd!
+    au InsertEnter * set timeoutlen=0
+    au InsertLeave * set timeoutlen=1000
+  augroup END
+endif
