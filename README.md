@@ -8,6 +8,7 @@ Requirements:
 Run:
 ```
 ln -s ~/projects/dots/vim/vimrc ~/.vimrc
+ln -s ~/projects/dots/vim/vim ~/.vim
 ```
 
 ### tmux
