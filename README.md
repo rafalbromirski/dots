@@ -22,3 +22,9 @@ ln -s ~/projects/dots/tmux/tmux.conf ~/tmux.conf
 ```
 ln -s ~/projects/dots/tmux/zshrc ~/.zshrc
 ```
+
+### git
+
+```
+ln -s ~/projects/dots/git/gitconfig ~/.gitcofig
+```

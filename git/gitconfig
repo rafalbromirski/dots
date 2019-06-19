@@ -1,0 +1,36 @@
+[alias]
+  st = status
+  co = checkout
+  diff = diff --word-diff
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[core]
+  editor = mvim -f
+  pager = less -FRSX
+	excludesfile = /Users/rb/.gitignore_global
+[pager]
+  log = less
+  show = less
+  diff = less
+[user]
+  name = NAME
+  email = EMAIL
+[color]
+  ui = auto
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+[merge]
+  tool = mvimdiff
+[mergetool "mvim"]
+  cmd = mvim -d -g $LOCAL $MERGED $REMOTE
+  keepBackup = false
+[mergetool "mvimdiff"]
+  cmd = mvimdiff -d -g $LOCAL $MERGED $REMOTE
+  keepBackup = false
+[mergetool]
+  keepBackup = false
+[pull]
+  rebase = true
+[push]
+  default = simple
