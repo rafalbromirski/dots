@@ -53,9 +53,7 @@ Plug 'prettier/vim-prettier', {
     \ 'lua',
     \ 'php',
     \ 'python',
-    \ 'ruby',
-    \ 'html',
-    \ 'swift' ] }
+    \ 'html' ] }
 
 call plug#end()
 
@@ -394,6 +392,10 @@ if !exists('g:neocomplete#force_omni_input_patterns')
 endif
 let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 " neocomplete.vim }}}
+
+" vim-prettier
+" let g:prettier#autoformat = 0
+" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
 
 " =========================================
 " OTHER HACKS
