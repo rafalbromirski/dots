@@ -37,6 +37,8 @@ Plug 'ap/vim-css-color'
 " Themes
 Plug 'rafalbromirski/vim-airlineish'
 Plug 'rafalbromirski/vim-aurora'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 
 " Prettier
 Plug 'prettier/vim-prettier', {
@@ -356,6 +358,14 @@ inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 " vim-prettier
 " let g:prettier#autoformat = 0
 " autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
+
+" goyo + limelight
+nmap ,g :Goyo <CR>
+let g:goyo_width = "50%"
+let g:goyo_height = "80%"
+
+" autocmd! User GoyoEnter Limelight
+" autocmd! User GoyoLeave Limelight!
 
 " =========================================
 " OTHER HACKS
