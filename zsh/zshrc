@@ -123,6 +123,9 @@ export NVM_DIR="$HOME/.nvm"
 # z
 . /usr/local/etc/profile.d/z.sh
 
+# go
+export GOPATH=$HOME/go
+
 # aliases
 alias y="yarn"
 alias ys="yarn start"
