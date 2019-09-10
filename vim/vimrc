@@ -16,6 +16,8 @@ Plug 'tpope/vim-commentary'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'alvan/vim-closetag'
 Plug 'vimwiki/vimwiki'
+
+" Linter
 Plug 'w0rp/ale'
 
 " Formatting
@@ -31,33 +33,31 @@ Plug 'fatih/vim-go'
 
 " Syntax
 Plug 'sheerun/vim-polyglot'
-Plug 'prettier/vim-prettier'
 Plug 'ap/vim-css-color'
 
 " Themes
 Plug 'rafalbromirski/vim-airlineish'
 Plug 'rafalbromirski/vim-aurora'
 Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
 
 " Prettier
 Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'branch': 'release/1.x',
-  \ 'for': [
-    \ 'javascript',
-    \ 'typescript',
-    \ 'css',
-    \ 'less',
-    \ 'scss',
-    \ 'json',
-    \ 'graphql',
-    \ 'markdown',
-    \ 'vue',
-    \ 'lua',
-    \ 'php',
-    \ 'python',
-    \ 'html' ] }
+      \ 'do': 'yarn install',
+      \ 'branch': 'release/1.x',
+      \ 'for': [
+      \ 'javascript',
+      \ 'typescript',
+      \ 'css',
+      \ 'less',
+      \ 'scss',
+      \ 'json',
+      \ 'graphql',
+      \ 'markdown',
+      \ 'vue',
+      \ 'lua',
+      \ 'php',
+      \ 'python',
+      \ 'html' ] }
 
 call plug#end()
 
@@ -156,12 +156,9 @@ au FocusLost * :silent! wall
 au VimResized * :wincmd =
 
 augroup trailing
-    au!
-    au InsertEnter * :set listchars-=trail:⌴
+  au!
+  au InsertEnter * :set listchars-=trail:⌴
 augroup END
-
-" make uses real tabs
-" au FileType make set noexpandtab
 
 " =========================================
 " GUI
@@ -178,15 +175,11 @@ if has("gui_macvim")
   " set macligatures
   " set guifont=Fira\ Code:h14
 
-  highlight SpellBad term=underline gui=undercurl guisp=Orange
-
   " Different cursors for different modes.
   set guicursor=n-c:block-Cursor-blinkon0
   set guicursor+=v:block-vCursor-blinkon0
   set antialias
   set guioptions=A
-  " set guioptions-=r "remove right-hand scroll bar
-  " set guioptions-=L "remove left-hand scroll bar
 end
 
 set background=dark
@@ -216,10 +209,6 @@ imap <C-y> <Esc>ddi
 map <C-z> <Esc>
 imap <C-z> <Esc>ui
 
-" fast scrolling using control when in command mode (keeping the j/k paradigm)
-map <D-j> <C-d>
-map <D-k> <C-u>
-
 " duplicate current line
 nnoremap <D-d> Yp
 
@@ -239,7 +228,7 @@ noremap ,v :vsp^<cr>
 noremap ,h :split^<cr>
 
 " copy file path to clipboard
-nmap ,y :let @+ = expand("%")<CR>
+noremap ,y :let @+ = expand("%")<CR>
 
 " shift key fixes
 if has("user_commands")
@@ -266,38 +255,38 @@ vnoremap <D-DOWN> :m'>+<CR>gv=gv
 vnoremap <D-UP> :m-2<CR>gv=gv
 
 " cycle tabs with <CTRL><Left> and <CTRL><Right>
-nmap <D-Left> :tabprev<CR>
-nmap <D-Right> :tabnext<CR>
+nnoremap <D-Left> :tabprev<CR>
+nnoremap <D-Right> :tabnext<CR>
 
 " Navigate between splits <TAB> / <SHIFT+TAB>
-nmap <Tab> <c-w><c-w>
-nmap <s-Tab> <c-w><s-w>
+nnoremap <Tab> <c-w><c-w>
+nnoremap <s-Tab> <c-w><s-w>
 
-nmap <D->> :vertical resize +10<CR>
-nmap <D-<> :vertical resize -10<CR>
+nnoremap <D->> :vertical resize +10<CR>
+nnoremap <D-<> :vertical resize -10<CR>
 
 " v fast save, close etc
-nmap ,w :w!<CR>
-nmap ,q :q!<CR>
-nmap ,x :x!<CR>
-nmap ,o :only!<CR>
+nnoremap ,w :w!<CR>
+nnoremap ,q :q!<CR>
+nnoremap ,x :x!<CR>
+nnoremap ,o :only!<CR>
 
 " Keep search matches in the middle of the window.
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
 " spellcheck
-nmap ,s :setlocal spell! spell?<CR>
+nnoremap ,s :setlocal spell! spell?<CR>
+
+" eslint fix
+nnoremap ,e :ALEFix eslint<CR>
+
+" terminal (vsplit)
+nnoremap ,t :vert term<CR>
 
 " =========================================
 " PLUGINS
 " =========================================
-
-" supertab
-" let g:SuperTabCrMapping = 0
-" let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
-" let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
-" let g:SuperTabContextDiscoverDiscovery = ["&completefunc:<c-x><c-u>", "&omnifunc:<c-x><c-o>"]
 
 " rgrep
 map <leader>f :Rgrep<CR>
@@ -309,6 +298,7 @@ let Grep_Skip_Dirs = '.git node_modules'
 let g:airline_theme = 'airlineish'
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
+let g:airline_section_b = '%{airline#util#wrap(airline#extensions#branch#get_head(),100)}'
 
 set laststatus=2
 
@@ -320,19 +310,18 @@ autocmd BufWritePost * exe 'GitGutter'
 
 " Ctrlp
 let g:ctrlp_max_files = 0
-map ,jj :CtrlP 'ra'<CR>
+noremap ,jj :CtrlP 'ra'<CR>
 
 " NERDTree
 augroup ps_nerdtree
-    au!
-    au Filetype nerdtree setlocal nolist
-    " au Filetype nerdtree nnoremap <buffer> K :q<cr>
+  au!
+  au Filetype nerdtree setlocal nolist
 augroup END
 
 let NERDTreeHighlightCursorline = 1
 let NERDTreeIgnore = ['\~$', '.*\.pyc$', 'pip-log\.txt$', 'whoosh_index',
-                    \ 'xapian_index', '.*.pid', 'monitor.py', '.*-fixtures-.*.json',
-                    \ '.*\.o$', 'db.db', 'tags.bak']
+      \ 'xapian_index', '.*.pid', 'monitor.py', '.*-fixtures-.*.json',
+      \ '.*\.o$', 'db.db', 'tags.bak']
 
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
@@ -358,16 +347,18 @@ let g:go_fmt_command = "goimports"
 let g:deoplete#enable_at_startup = 1
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 
+" ale/linter
+" let g:ale_fixers = {
+"       \ 'javascript': ['eslint']
+"       \ }
+
 " vim-prettier
 autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
 
-" goyo + limelight
-nmap ,g :Goyo <CR>
+" goyo
+nnoremap ,g :Goyo <CR>
 let g:goyo_width = "50%"
 let g:goyo_height = "80%"
-
-" autocmd! User GoyoEnter Limelight
-" autocmd! User GoyoLeave Limelight!
 
 " =========================================
 " OTHER HACKS
@@ -398,7 +389,7 @@ autocmd BufWritePost .vimrc source %
 " SNIPPETS
 " =========================================
 
-nnoremap ,rc :-1read ~/.vim/snippets/react-class.txt<CR>2jw
-nnoremap ,rf :-1read ~/.vim/snippets/react-functional.txt<CR>2jw
-nnoremap ,rpi :-1read ~/.vim/snippets/react-props-import.txt<CR>
-nnoremap ,rpd :-1read ~/.vim/snippets/react-props-default.txt<CR>
+" nnoremap ,rc :-1read ~/.vim/snippets/react-class.txt<CR>2jw
+" nnoremap ,rf :-1read ~/.vim/snippets/react-functional.txt<CR>2jw
+" nnoremap ,rpi :-1read ~/.vim/snippets/react-props-import.txt<CR>
+" nnoremap ,rpd :-1read ~/.vim/snippets/react-props-default.txt<CR>
