@@ -1,6 +1,4 @@
-" =========================================
-" Plugins
-" =========================================
+" --- Plugins ------------------------------------------------------------------
 
 " Begin
 call plug#begin('~/.vim/plugged')
@@ -52,7 +50,6 @@ Plug 'prettier/vim-prettier', {
       \ 'scss',
       \ 'json',
       \ 'graphql',
-      \ 'markdown',
       \ 'vue',
       \ 'lua',
       \ 'php',
@@ -61,20 +58,13 @@ Plug 'prettier/vim-prettier', {
 
 call plug#end()
 
-" =========================================
-" GENERAL
-" =========================================
+" --- General ------------------------------------------------------------------
 
 set shell=zsh
 set encoding=utf-8
 set termencoding=utf-8
 set spelllang=en_gb
 
-" =========================================
-" BASIC CONFIGURATION
-" =========================================
-
-" project
 set modeline
 set modelines=10
 set backspace=indent,eol,start
@@ -149,20 +139,7 @@ set mousehide
 set mouse=a
 set fo=1
 
-" Save when losing focus
-au FocusLost * :silent! wall
-
-" Resize splits when the window is resized
-au VimResized * :wincmd =
-
-augroup trailing
-  au!
-  au InsertEnter * :set listchars-=trail:⌴
-augroup END
-
-" =========================================
-" GUI
-" =========================================
+" --- GUI ----------------------------------------------------------------------
 
 " Rgrep fix for Mac Os X
 let g:Grep_Xargs_Options='-0'
@@ -188,9 +165,7 @@ colorscheme aurora
 " fix for jsx
 highlight link xmlEndTag xmlTag
 
-" =========================================
-" KEYBINDS
-" =========================================
+" --- Bindings -----------------------------------------------------------------
 
 " totally annoying default mapping for cap k
 nmap K <nop>
@@ -216,20 +191,6 @@ nnoremap <D-d> Yp
 noremap  <F1> :set invfullscreen<CR>
 inoremap <F1> <ESC>:set invfullscreen<CR>a
 
-" set curosrline / column (crosshair)
-nnoremap ,c :set cursorline! cursorcolumn!<CR>
-
-" nerdtree
-noremap ,d :NERDTreeToggle<cr>
-noremap ,f :NERDTreeFind<cr>
-
-" splits
-noremap ,v :vsp^<cr>
-noremap ,h :split^<cr>
-
-" copy file path to clipboard
-noremap ,y :let @+ = expand("%")<CR>
-
 " shift key fixes
 if has("user_commands")
   command! -bang -nargs=? -complete=file E e<bang> <args>
@@ -243,7 +204,7 @@ if has("user_commands")
   command! -bang Qa qa<bang>
 endif
 
-" Yank from the cursor to the end of the line, to be consistent with C and D.
+" yank from the cursor to the end of the line, to be consistent with C and D.
 nnoremap Y y$
 
 " moving lines
@@ -265,15 +226,12 @@ nnoremap <s-Tab> <c-w><s-w>
 nnoremap <D->> :vertical resize +10<CR>
 nnoremap <D-<> :vertical resize -10<CR>
 
-" v fast save, close etc
-nnoremap ,w :w!<CR>
-nnoremap ,q :q!<CR>
-nnoremap ,x :x!<CR>
-nnoremap ,o :only!<CR>
-
-" Keep search matches in the middle of the window.
+" keep search matches in the middle of the window.
 nnoremap n nzzzv
 nnoremap N Nzzzv
+
+" tab only
+nnoremap ,o :tabo<CR>
 
 " spellcheck
 nnoremap ,s :setlocal spell! spell?<CR>
@@ -284,15 +242,34 @@ nnoremap ,e :ALEFix eslint<CR>
 " terminal (vsplit)
 nnoremap ,t :vert term<CR>
 
-" =========================================
-" PLUGINS
-" =========================================
+" set curosrline / column (crosshair)
+nnoremap ,c :set cursorline! cursorcolumn!<CR>
+
+" nerdtree
+noremap ,d :NERDTreeToggle<cr>
+noremap ,f :NERDTreeFind<cr>
+
+" splits
+noremap ,v :vsp^<cr>
+noremap ,h :split^<cr>
+
+" copy file path to clipboard
+noremap ,y :let @+ = expand("%")<CR>
+
+
+" open vimrc
+nnoremap ,1 :edit $MYVIMRC<CR>
+
+" --- Plugins: config ----------------------------------------------------------
 
 " rgrep
 map <leader>f :Rgrep<CR>
-au FileType qf nmap <buffer> <cr> <cr><c-w><c-p>
 let Grep_Skip_Files = '*.bak *~ *tags *.log *.orig *.snap'
 let Grep_Skip_Dirs = '.git node_modules'
+augroup plugin_rgrep
+  autocmd!
+  autocmd FileType qf nmap <buffer> <cr> <cr><c-w><c-p>
+augroup END
 
 " airline
 let g:airline_theme = 'airlineish'
@@ -302,20 +279,24 @@ let g:airline_section_b = '%{airline#util#wrap(airline#extensions#branch#get_hea
 
 set laststatus=2
 
-" GitGutter
+" gitgutter
 let g:gitgutter_eager = 0
 let g:gitgutter_enabled = 1
 let g:gitgutter_max_signs = 1000
-autocmd BufWritePost * exe 'GitGutter'
 
-" Ctrlp
+augroup plugin_gitgutter
+  autocmd!
+  autocmd BufWritePost * exe 'GitGutter'
+augroup END
+
+" ctrlp
 let g:ctrlp_max_files = 0
 noremap ,jj :CtrlP 'ra'<CR>
 
-" NERDTree
-augroup ps_nerdtree
-  au!
-  au Filetype nerdtree setlocal nolist
+" nerdtree
+augroup plugin_nerdtree
+  autocmd!
+  autocmd Filetype nerdtree setlocal nolist
 augroup END
 
 let NERDTreeHighlightCursorline = 1
@@ -329,7 +310,7 @@ let NERDChristmasTree = 1
 let NERDTreeChDirMode = 2
 let NERDTreeMapJumpFirstChild = 'gK'
 
-" Multiple cursors
+" multiple cursors
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-m>'
 let g:multi_cursor_prev_key='<C-n>'
@@ -353,43 +334,37 @@ inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 "       \ }
 
 " vim-prettier
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
+augroup plugin_prettier
+  autocmd!
+  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml,*.html Prettier
+augroup END
 
 " goyo
 nnoremap ,g :Goyo <CR>
 let g:goyo_width = "50%"
 let g:goyo_height = "80%"
 
-" =========================================
-" OTHER HACKS
-" =========================================
+" --- Editor: utils ------------------------------------------------------------
 
-" Remember last location in file
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-        \| exe "normal g'\"" | endif
-endif
+function! StripTrailingWhitespace()
+  " Don't strip on these filetypes
+  if &ft =~ 'markdown'
+    return
+  endif
 
-" Remove whitespaces on save
-autocmd BufWritePre * :%s/\s\+$//e
+  %s/\s\+$//e
+endfun
 
-if ! has('gui_running')
-  set ttimeoutlen=10
-  augroup FastEscape
-    autocmd!
-    au InsertEnter * set timeoutlen=0
-    au InsertLeave * set timeoutlen=1000
-  augroup END
-endif
-
-" Reload vimrc on save
-autocmd BufWritePost .vimrc source %
-
-" =========================================
-" SNIPPETS
-" =========================================
-
-" nnoremap ,rc :-1read ~/.vim/snippets/react-class.txt<CR>2jw
-" nnoremap ,rf :-1read ~/.vim/snippets/react-functional.txt<CR>2jw
-" nnoremap ,rpi :-1read ~/.vim/snippets/react-props-import.txt<CR>
-" nnoremap ,rpd :-1read ~/.vim/snippets/react-props-default.txt<CR>
+augroup editor
+  autocmd!
+  " remove white space on save
+  autocmd BufWritePre * call StripTrailingWhitespace()
+  " Reload vimrc on save
+  autocmd BufWritePost .vimrc source %
+  " Save when losing focus
+  autocmd FocusLost * :silent! wall
+  " Resize splits when the window is resized
+  autocmd VimResized * :wincmd =
+  " trailing
+  autocmd InsertEnter * :set listchars-=trail:⌴
+augroup END
