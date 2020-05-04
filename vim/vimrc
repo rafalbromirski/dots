@@ -5,15 +5,15 @@ call plug#begin('~/.vim/plugged')
 
 " General
 Plug 'scrooloose/nerdtree'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'bling/vim-airline'
 Plug 'vim-scripts/grep.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'alvan/vim-closetag'
-Plug 'vimwiki/vimwiki'
+
+" Fzf
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 " Linter
 Plug 'w0rp/ale'
@@ -31,17 +31,15 @@ Plug 'fatih/vim-go'
 
 " Syntax
 Plug 'sheerun/vim-polyglot'
-Plug 'ap/vim-css-color'
+" Plug 'ap/vim-css-color'
+Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 
 " Themes
-Plug 'rafalbromirski/vim-airlineish'
 Plug 'rafalbromirski/vim-aurora'
-Plug 'junegunn/goyo.vim'
 
 " Prettier
 Plug 'prettier/vim-prettier', {
       \ 'do': 'yarn install',
-      \ 'branch': 'release/1.x',
       \ 'for': [
       \ 'javascript',
       \ 'typescript',
@@ -91,7 +89,8 @@ set linebreak
 set showbreak=...
 set keymodel=startsel,stopsel
 set ttyfast
-set lcs=tab:\ \ ,eol:$,trail:~,extends:>,precedes:<
+set listchars=tab:\ \ ,trail:·,extends:>,precedes:<
+set list
 set novisualbell
 set noerrorbells
 set cinoptions=:0,p0,t0
@@ -139,6 +138,9 @@ set mousehide
 set mouse=a
 set fo=1
 
+" help W11 - do not show a message when file has been changed
+set autoread
+
 " --- GUI ----------------------------------------------------------------------
 
 " Rgrep fix for Mac Os X
@@ -159,11 +161,44 @@ if has("gui_macvim")
   set guioptions=A
 end
 
+set termguicolors
 set background=dark
 colorscheme aurora
 
-" fix for jsx
-highlight link xmlEndTag xmlTag
+" --- GUI: statusline ----------------------------------------------------------
+
+" visible statusline
+set laststatus=2
+
+" statusline
+function! CurrentMode()
+  let l:mode = mode()
+
+  if l:mode==#"n"
+    return "NORMAL"
+  elseif l:mode==?"v"
+    return "VISUAL"
+  elseif l:mode==#"i"
+    return "INSERT"
+  elseif l:mode==#"R"
+    return "REPLACE"
+  endif
+endfunction
+
+function! StatuslineMode()
+  let l:mode = CurrentMode()
+
+  return '['.l:mode.']'
+endfunction
+
+set statusline=
+set statusline+=%{StatuslineMode()}
+set statusline+=\ %f
+set statusline+=%m
+set statusline+=%=
+set statusline+=\ %y
+set statusline+=[%{&fileencoding?&fileencoding:&encoding}]
+set statusline+=[%{&fileformat}]
 
 " --- Bindings -----------------------------------------------------------------
 
@@ -256,11 +291,14 @@ noremap ,h :split^<cr>
 " copy file path to clipboard
 noremap ,y :let @+ = expand("%")<CR>
 
-
 " open vimrc
 nnoremap ,1 :edit $MYVIMRC<CR>
 
 " --- Plugins: config ----------------------------------------------------------
+
+" hexokinase
+let g:Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
+let g:Hexokinase_highlighters = ['backgroundfull']
 
 " rgrep
 map <leader>f :Rgrep<CR>
@@ -270,14 +308,6 @@ augroup plugin_rgrep
   autocmd!
   autocmd FileType qf nmap <buffer> <cr> <cr><c-w><c-p>
 augroup END
-
-" airline
-let g:airline_theme = 'airlineish'
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-let g:airline_section_b = '%{airline#util#wrap(airline#extensions#branch#get_head(),100)}'
-
-set laststatus=2
 
 " gitgutter
 let g:gitgutter_eager = 0
@@ -289,9 +319,10 @@ augroup plugin_gitgutter
   autocmd BufWritePost * exe 'GitGutter'
 augroup END
 
-" ctrlp
-let g:ctrlp_max_files = 0
-noremap ,jj :CtrlP 'ra'<CR>
+" fzf
+let g:fzf_preview_window = ''
+let g:fzf_layout = { 'down': '~30%' }
+noremap ,jj :Files<CR>
 
 " nerdtree
 augroup plugin_nerdtree
@@ -310,13 +341,6 @@ let NERDChristmasTree = 1
 let NERDTreeChDirMode = 2
 let NERDTreeMapJumpFirstChild = 'gK'
 
-" multiple cursors
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<C-m>'
-let g:multi_cursor_prev_key='<C-n>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<Esc>'
-
 " vim-closetag
 let g:closetag_filenames = "*.html,*.xhtml,*.js"
 let g:closetag_xhtml_filenames = '*.xhtml,*.jsx,*.js'
@@ -329,8 +353,16 @@ let g:deoplete#enable_at_startup = 1
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 
 " ale/linter
+" let g:ale_linters = {
+"       \  'javascript': ['eslint'],
+"       \  'typescript': ['tslint'],
+"       \}
+
 " let g:ale_fixers = {
-"       \ 'javascript': ['eslint']
+"       \ 'javascript': ['eslint'],
+"       \ 'javascript.jsx': ['eslint'],
+"       \ 'typescript': ['tslint'],
+"       \ 'typescript.tsx': ['tslint'],
 "       \ }
 
 " vim-prettier
@@ -339,10 +371,10 @@ augroup plugin_prettier
   autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml,*.html Prettier
 augroup END
 
-" goyo
-nnoremap ,g :Goyo <CR>
-let g:goyo_width = "50%"
-let g:goyo_height = "80%"
+" avoid wrapping a single arrow function param in parens
+" avoid|always
+" default: 'avoid'
+let g:prettier#config#arrow_parens = get(g:,'prettier#config#arrow_parens', 'always')
 
 " --- Editor: utils ------------------------------------------------------------
 
@@ -365,6 +397,4 @@ augroup editor
   autocmd FocusLost * :silent! wall
   " Resize splits when the window is resized
   autocmd VimResized * :wincmd =
-  " trailing
-  autocmd InsertEnter * :set listchars-=trail:⌴
 augroup END
