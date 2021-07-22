@@ -125,6 +125,14 @@ export NVM_DIR="$HOME/.nvm"
 
 # go
 export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+export EDITOR=vim
+
+# fzf
+# Setting ag as the default source for fzf
+export FZF_DEFAULT_COMMAND='ag -g ""'
+# To apply the command to CTRL-T as well
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # aliases
 alias y="yarn"
@@ -133,3 +141,10 @@ alias yl="yarn lint"
 alias yt="yarn test"
 
 alias m="mvim"
+
+alias ggpushu='git push -u origin "$(git_current_branch)"'
+alias grom='git rebase origin/master'
+alias grim='git rebase -i origin/master'
+alias gfo='git fetch origin'
+alias gm='git merge --no-ff'
+alias gcom='git checkout master'

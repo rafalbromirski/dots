@@ -5,11 +5,11 @@ call plug#begin('~/.vim/plugged')
 
 " General
 Plug 'scrooloose/nerdtree'
-Plug 'vim-scripts/grep.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
 Plug 'alvan/vim-closetag'
+Plug 'christoomey/vim-sort-motion'
 
 " Fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -21,28 +21,31 @@ Plug 'w0rp/ale'
 " Formatting
 Plug 'sbdchd/neoformat'
 
-" Deoplete
-Plug 'Shougo/deoplete.nvim'
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
+" coc
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Clojure
+Plug 'tpope/vim-fireplace'
 
 " Go
 Plug 'fatih/vim-go'
 
 " Syntax
 Plug 'sheerun/vim-polyglot'
-" Plug 'ap/vim-css-color'
 Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 
 " Themes
 Plug 'rafalbromirski/vim-aurora'
+" Plug 'rafalbromirski/vim-marble'
 
 " Prettier
 Plug 'prettier/vim-prettier', {
       \ 'do': 'yarn install',
       \ 'for': [
       \ 'javascript',
+      \ 'javascriptreact',
       \ 'typescript',
+      \ 'typescriptreact',
       \ 'css',
       \ 'less',
       \ 'scss',
@@ -51,8 +54,7 @@ Plug 'prettier/vim-prettier', {
       \ 'vue',
       \ 'lua',
       \ 'php',
-      \ 'python',
-      \ 'html' ] }
+      \ 'python' ] }
 
 call plug#end()
 
@@ -73,7 +75,7 @@ set nowrap
 set wildmenu
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,*.zip,*.gz,*.bz,*.tar,*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov,*.orig,.pdf,*.DS_Store
-set wildignore+=*/.sass-cache/*,*/tmp/*,*/node_modules/*,*/bower_components/*
+set wildignore+=*/.sass-cache/*,*/tmp/*,*/node_modules/*,*/bower_components/*,*/.next/*
 set clipboard+=unnamed
 set number
 set ruler
@@ -143,27 +145,31 @@ set autoread
 
 " --- GUI ----------------------------------------------------------------------
 
-" Rgrep fix for Mac Os X
-let g:Grep_Xargs_Options='-0'
-
 " MacVim config
 if has("gui_macvim")
   " Use the normal HIG movements, except for M-Up/Down
   let macvim_skip_cmd_opt_movement = 1
   set guifont=Monaco\ For\ Powerline:h13
-  " set macligatures
-  " set guifont=Fira\ Code:h14
 
-  " Different cursors for different modes.
+  " different cursors for different modes.
   set guicursor=n-c:block-Cursor-blinkon0
   set guicursor+=v:block-vCursor-blinkon0
-  set antialias
+  " set antialias
+
+  " better vim tabs
   set guioptions=A
 end
+
+" This is only necessary if you use 'set termguicolors'
+" It fixes tmux+vim
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 set termguicolors
 set background=dark
 colorscheme aurora
+" set background=light
+" colorscheme marble
 
 " --- GUI: statusline ----------------------------------------------------------
 
@@ -192,18 +198,27 @@ function! StatuslineMode()
 endfunction
 
 set statusline=
+" [MODE]
 set statusline+=%{StatuslineMode()}
+" file path
 set statusline+=\ %f
+" [+]/[-]
 set statusline+=%m
+" spacer
 set statusline+=%=
+" col / row
+set statusline+=%l\:%c
+" file type
 set statusline+=\ %y
+" file encoding
 set statusline+=[%{&fileencoding?&fileencoding:&encoding}]
+" file format
 set statusline+=[%{&fileformat}]
 
 " --- Bindings -----------------------------------------------------------------
 
 " totally annoying default mapping for cap k
-nmap K <nop>
+" nmap K <nop>
 
 " ; => ;
 nnoremap ; :
@@ -294,20 +309,14 @@ noremap ,y :let @+ = expand("%")<CR>
 " open vimrc
 nnoremap ,1 :edit $MYVIMRC<CR>
 
+" run love2d
+nnoremap ,l :silent exec "!love ."<CR>
+
 " --- Plugins: config ----------------------------------------------------------
 
 " hexokinase
-let g:Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
+let g:Hexokinase_optInPatterns = 'triple_hex,full_hex,rgb,rgba,hsl,hsla'
 let g:Hexokinase_highlighters = ['backgroundfull']
-
-" rgrep
-map <leader>f :Rgrep<CR>
-let Grep_Skip_Files = '*.bak *~ *tags *.log *.orig *.snap'
-let Grep_Skip_Dirs = '.git node_modules'
-augroup plugin_rgrep
-  autocmd!
-  autocmd FileType qf nmap <buffer> <cr> <cr><c-w><c-p>
-augroup END
 
 " gitgutter
 let g:gitgutter_eager = 0
@@ -322,7 +331,9 @@ augroup END
 " fzf
 let g:fzf_preview_window = ''
 let g:fzf_layout = { 'down': '~30%' }
+
 noremap ,jj :Files<CR>
+nnoremap <leader>f :Ag <C-R><C-W><CR>
 
 " nerdtree
 augroup plugin_nerdtree
@@ -342,33 +353,67 @@ let NERDTreeChDirMode = 2
 let NERDTreeMapJumpFirstChild = 'gK'
 
 " vim-closetag
-let g:closetag_filenames = "*.html,*.xhtml,*.js"
-let g:closetag_xhtml_filenames = '*.xhtml,*.jsx,*.js'
+let g:closetag_filenames = "*.html,*.js,*.tsx,*.ts"
+let g:closetag_xhtml_filenames = '*.html,*.jsx,*.js,*.tsx,*.ts'
 
 " vim-go
 let g:go_fmt_command = "goimports"
+let g:go_highlight_functions = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_types = 1
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_extra_types = 0
+let g:go_highlight_format_strings = 0
+let g:go_highlight_function_parameters = 0
+let g:go_highlight_generate_tags = 0
+let g:go_highlight_variable_assignments = 0
 
-" deoplete
-let g:deoplete#enable_at_startup = 1
-inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" coc
+let g:coc_global_extensions = [ 'coc-tsserver' ]
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+nmap <silent> gd <Plug>(coc-definition)
+
+function! s:show_doc()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" " Use K to show documentation in preview window.
+nmap <silent> K :call <SID>show_doc()<CR>
 
 " ale/linter
 " let g:ale_linters = {
-"       \  'javascript': ['eslint'],
-"       \  'typescript': ['tslint'],
-"       \}
+"       \ 'javascript': ['eslint'],
+"       \ 'typescript': ['tsserver', 'tslint'],
+"       \ }
 
 " let g:ale_fixers = {
 "       \ 'javascript': ['eslint'],
-"       \ 'javascript.jsx': ['eslint'],
-"       \ 'typescript': ['tslint'],
-"       \ 'typescript.tsx': ['tslint'],
+"       \ 'typescript': ['prettier'],
 "       \ }
 
 " vim-prettier
 augroup plugin_prettier
   autocmd!
-  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml,*.html Prettier
+  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml Prettier
 augroup END
 
 " avoid wrapping a single arrow function param in parens
@@ -381,6 +426,10 @@ let g:prettier#config#arrow_parens = get(g:,'prettier#config#arrow_parens', 'alw
 function! StripTrailingWhitespace()
   " Don't strip on these filetypes
   if &ft =~ 'markdown'
+    return
+  endif
+
+  if &ft =~ 'html.handlebars'
     return
   endif
 
@@ -397,4 +446,9 @@ augroup editor
   autocmd FocusLost * :silent! wall
   " Resize splits when the window is resized
   autocmd VimResized * :wincmd =
+augroup END
+
+augroup editor_syntax
+  autocmd!
+  autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 augroup END
