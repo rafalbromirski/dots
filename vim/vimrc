@@ -413,7 +413,7 @@ nmap <silent> K :call <SID>show_doc()<CR>
 " vim-prettier
 augroup plugin_prettier
   autocmd!
-  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.yaml Prettier
+  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue Prettier
 augroup END
 
 " avoid wrapping a single arrow function param in parens

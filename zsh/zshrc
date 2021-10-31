@@ -148,3 +148,6 @@ alias grim='git rebase -i origin/master'
 alias gfo='git fetch origin'
 alias gm='git merge --no-ff'
 alias gcom='git checkout master'
+
+# other
+alias helm3='echo "Alias! helm3 -> helm (zshrc)\n" && helm'
