@@ -141,6 +141,7 @@ alias yl="yarn lint"
 alias yt="yarn test"
 
 alias m="mvim"
+alias v="vim"
 
 alias ggpushu='git push -u origin "$(git_current_branch)"'
 alias grom='git rebase origin/master'
@@ -148,6 +149,14 @@ alias grim='git rebase -i origin/master'
 alias gfo='git fetch origin'
 alias gm='git merge --no-ff'
 alias gcom='git checkout master'
+alias grh='git reset --hard origin/$(git_current_branch)'
 
 # other
 alias helm3='echo "Alias! helm3 -> helm (zshrc)\n" && helm'
+
+# kubectl
+alias k="kubectl"
+alias kgn="kubectl --namespace=glassnode"
+alias kjn="kubectl --namespace=jobs"
+alias kbn="kubectl --namespace=blockchain"
+alias kdn="kubectl --namespace=database"

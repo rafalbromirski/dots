@@ -56,6 +56,12 @@ Plug 'prettier/vim-prettier', {
       \ 'php',
       \ 'python' ] }
 
+" JSDocs
+Plug 'heavenshell/vim-jsdoc', {
+      \ 'for': ['javascript', 'javascript.jsx','typescript'],
+      \ 'do': 'make install'
+      \ }
+
 call plug#end()
 
 " --- General ------------------------------------------------------------------
