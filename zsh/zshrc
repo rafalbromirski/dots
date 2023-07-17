@@ -150,6 +150,7 @@ alias gfo='git fetch origin'
 alias gm='git merge --no-ff'
 alias gcom='git checkout master'
 alias grh='git reset --hard origin/$(git_current_branch)'
+alias latest="git describe --abbrev=0 --tags"
 
 # other
 alias helm3='echo "Alias! helm3 -> helm (zshrc)\n" && helm'
