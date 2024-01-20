@@ -4,7 +4,7 @@
   diff = diff --word-diff
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 [core]
-  editor = mvim -f
+  editor = nvim -f
   pager = less -FRSX
 	excludesfile = /Users/rb/.gitignore_global
 [pager]
@@ -21,12 +21,9 @@
   branch = auto
   interactive = auto
 [merge]
-  tool = mvimdiff
-[mergetool "mvim"]
-  cmd = mvim -d -g $LOCAL $MERGED $REMOTE
-  keepBackup = false
-[mergetool "mvimdiff"]
-  cmd = mvimdiff -d -g $LOCAL $MERGED $REMOTE
+  tool = nvim
+[mergetool "nvim"]
+  cmd = nvim -d $LOCAL $MERGED $REMOTE
   keepBackup = false
 [mergetool]
   keepBackup = false

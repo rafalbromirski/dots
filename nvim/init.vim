@@ -16,7 +16,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
 " Linter
-" Plug 'dense-analysis/ale'
+Plug 'dense-analysis/ale'
 
 " Formatting
 Plug 'sbdchd/neoformat'
@@ -40,9 +40,12 @@ Plug 'fatih/vim-go'
 " Syntax
 Plug 'sheerun/vim-polyglot'
 " Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+Plug 'wuelnerdotexe/vim-astro'
 
 " Themes
 Plug 'rafalbromirski/vim-aurora'
+
+" Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 " Prettier
 Plug 'prettier/vim-prettier', {
@@ -87,7 +90,7 @@ set nowrap
 set wildmenu
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,*.zip,*.gz,*.bz,*.tar,*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov,*.orig,.pdf,*.DS_Store
-set wildignore+=*/.sass-cache/*,*/tmp/*,*/node_modules/*,*/bower_components/*,*/.next/*
+set wildignore+=*/.sass-cache/*,*/tmp/*,*/node_modules/*,*/bower_components/*,*/.next/*,*/coverage/*
 set clipboard+=unnamed
 set number
 set ruler
@@ -177,9 +180,10 @@ end
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-" set termguicolors
-" set background=dark
-" colorscheme aurora
+set termguicolors
+set background=dark
+colorscheme aurora
+" colorscheme catppuccin
 
 " --- GUI: statusline ----------------------------------------------------------
 
@@ -297,7 +301,7 @@ nnoremap ,o :tabo<CR>
 nnoremap ,s :setlocal spell! spell?<CR>
 
 " eslint fix
-" nnoremap ,e :ALEFix eslint<CR>
+nnoremap ,e :ALEFix eslint<CR>
 
 " terminal (vsplit)
 nnoremap ,t :vert term<CR>
@@ -377,6 +381,9 @@ let g:go_highlight_format_strings = 0
 let g:go_highlight_function_parameters = 0
 let g:go_highlight_generate_tags = 0
 let g:go_highlight_variable_assignments = 0
+
+" vim-astro
+let g:astro_typescript = 'enable'
 
 " lsp
 " let g:lsp_diagnostics_virtual_text_enabled = 0
@@ -469,15 +476,15 @@ endfunction
 " ale/linter
 " let g:ale_virtualtext_cursor = 'disabled'
 
-" let g:ale_linters = {
-"       \ 'javascript': ['prettier', 'eslint'],
-"       \ 'typescript': ['prettier', 'eslint'],
-"       \ }
+let g:ale_linters = {
+      \ 'javascript': ['prettier', 'eslint'],
+      \ 'typescript': ['prettier', 'eslint'],
+      \ }
 
-" let g:ale_fixers = {
-"       \ 'javascript': ['eslint'],
-"       \ 'typescript': ['prettier'],
-"       \ }
+let g:ale_fixers = {
+      \ 'javascript': ['eslint'],
+      \ 'typescript': ['prettier'],
+      \ }
 
 " vim-prettier
 augroup plugin_prettier
@@ -489,6 +496,7 @@ augroup END
 " avoid|always
 " default: 'avoid'
 let g:prettier#config#arrow_parens = get(g:,'prettier#config#arrow_parens', 'always')
+let g:prettier#config#jsx_bracket_same_line = get(g:,'prettier#config#jsx_bracket_same_line', 'false')
 
 " --- Editor: utils ------------------------------------------------------------
 
