@@ -45,8 +45,6 @@ Plug 'wuelnerdotexe/vim-astro'
 " Themes
 Plug 'rafalbromirski/vim-aurora'
 
-" Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-
 " Prettier
 Plug 'prettier/vim-prettier', {
       \ 'do': 'yarn install',
@@ -185,7 +183,6 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 set background=dark
 colorscheme aurora
-" colorscheme catppuccin
 
 " --- GUI: statusline ----------------------------------------------------------
 
