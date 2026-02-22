@@ -6,14 +6,10 @@
 [core]
   editor = nvim -f
   pager = less -FRSX
-	excludesfile = /Users/rb/.gitignore_global
 [pager]
   log = less
   show = less
   diff = less
-[user]
-  name = NAME
-  email = EMAIL
 [color]
   ui = auto
   diff = auto
@@ -32,6 +28,10 @@
 [push]
   default = simple
 [url "git@gitlab.com:"]
-	insteadOf = https://gitlab.com/
+  insteadOf = https://gitlab.com/
 [url "git@github.com:"]
-	insteadOf = https://github.com/
+  insteadOf = https://github.com/
+
+# Include local/private config (name, email, signing key)
+[include]
+  path = gitconfig.local

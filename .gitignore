@@ -2,3 +2,6 @@
 /vim
 
 .DS_Store
+
+# Private git config (name, email, signing key)
+git/gitconfig.local
