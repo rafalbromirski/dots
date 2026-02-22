@@ -1,7 +1,7 @@
 " --- Plugins ------------------------------------------------------------------
 
 " Begin
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 
 " General
 Plug 'scrooloose/nerdtree'
@@ -39,7 +39,7 @@ Plug 'fatih/vim-go'
 
 " Syntax
 Plug 'sheerun/vim-polyglot'
-" Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'wuelnerdotexe/vim-astro'
 
 " Themes
@@ -75,9 +75,11 @@ call plug#end()
 
 " --- General ------------------------------------------------------------------
 
+language en_US
+
 set shell=zsh
 set encoding=utf-8
-set termencoding=utf-8
+"set termencoding=utf-8
 set spelllang=en_gb
 
 set modeline
